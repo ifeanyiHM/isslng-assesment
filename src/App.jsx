@@ -35,10 +35,15 @@ function App() {
 
   //add a task
   const addTask = () => {
-    setTasks([...tasks, { text: newTask, completed: false }]);
-    setNewTask("");
-    setToast(true);
-    setToastMessage("Task Added");
+    if (newTask === "") {
+      setToast(true);
+      setToastMessage("Please enter a task before adding.");
+    } else {
+      setTasks([...tasks, { text: newTask, completed: false }]);
+      setNewTask("");
+      setToast(true);
+      setToastMessage("Task Added");
+    }
   };
 
   //check a task as complete
@@ -48,30 +53,40 @@ function App() {
         index === id ? { ...task, completed: !task.completed } : task
       )
     );
+    const taskStatus = tasks[id].completed ? "incomplete" : "completed";
+    setToast(true);
+    setToastMessage(`Task marked as ${taskStatus}!`);
   };
 
   //delete a task
   const deleteTask = (id) => {
-    alert("Are you sure you want to delete this task?");
-    setTasks((tasks) => tasks.filter((_, index) => index !== id));
-    setToast(true);
-    setToastMessage("Task Deleted");
+    if (confirm("Are you sure you want to delete this task?")) {
+      setTasks((tasks) => tasks.filter((_, index) => index !== id));
+      setToast(true);
+      setToastMessage("Task Deleted successfully.");
+    }
   };
 
   //delete only completed tasks
-  const deleteCompletedTask = (id) => {
-    alert("This would delete all completed task.");
-    setTasks((tasks) => tasks.filter((task) => !task.completed));
-    setToast(true);
-    setToastMessage("All Completed task deleted");
+  const deleteCompletedTask = () => {
+    if (confirm(" Are you sure you want to delete all completed tasks?")) {
+      setTasks((tasks) => tasks.filter((task) => !task.completed));
+      setToast(true);
+      setToastMessage(" Completed task deleted all successfully.");
+    }
   };
 
   //delete all tasks
   const deleteAllTask = () => {
-    alert("This will clear all you todo list.");
-    setTasks([]);
-    setToast(true);
-    setToastMessage("All task have been removed");
+    if (
+      confirm(
+        "Are you sure you want to delete all tasks? This action cannot be undone."
+      )
+    ) {
+      setTasks([]);
+      setToast(true);
+      setToastMessage(" All tasks deleted successfully.");
+    }
   };
 
   //edit a task
@@ -90,7 +105,7 @@ function App() {
     setTextEditIndex(null);
     setTextEdit("");
     setToast(true);
-    setToastMessage("Your task have been updated");
+    setToastMessage("Task updated successfully.");
   };
 
   //set timeout for toast message
@@ -158,7 +173,7 @@ function App() {
         ))}
       </ul>
       <div className="clear">
-        {tasks.length > 0 && (
+        {tasks.length > 1 && (
           <button onClick={deleteAllTask}>Clear all task</button>
         )}
         {tasks.filter((task) => task.completed).length > 0 && (
